@@ -521,13 +521,23 @@ QString MeasureToolPlugin::meterToPreferredUnit(qreal g, bool isSquare) const
     const MarbleLocale::MeasurementSystem measurementSystem =
             MarbleGlobal::getInstance()->locale()->measurementSystem();
 
-    if (isSquare) {
+    QString unit;
+//    if (isSquare) {
+//        g /= 1000000; // meters is now in km²
+//    } else {
+//        g /= 1000; // meters is now in km
+//    }
+    unit = "m";
+    if (isSquare && g >= 1000000) {
         g /= 1000000; // meters is now in km²
-    } else {
-        g /= 1000; // meters is now in km
+        unit = "km";
+    } 
+    if (!isSquare && g>=1000)
+    {
+      g /= 1000; // meters is now in km
+      unit = "km";
     }
 
-    QString unit;
     switch (measurementSystem) {
     case MarbleLocale::ImperialSystem:
         unit = "mi";
@@ -539,7 +549,6 @@ QString MeasureToolPlugin::meterToPreferredUnit(qreal g, bool isSquare) const
         g *= (isSquare) ? KM2NM*KM2NM : KM2NM;
         break;
     default:
-        unit = "km";
         break;
     }
 
